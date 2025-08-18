@@ -60,6 +60,44 @@ app.post('/assignment5', (req, res) => {
     
 });
 
+//handle weather API
+
+app.get('/weather', async (req,res)=>{
+
+    const weatherurl = "http://www.7timer.info/bin/astro.php?lon=113.17&lat=23.09&ac=0&lang=en&unit=metric&output=internal&tzshift=0";
+     try{
+        const response = await fetch(weatherurl);
+        //Getting image as buffer
+        const imageData = await response.arrayBuffer();
+
+        res.set('Content-Type', 'image/png');
+        res.send(Buffer.from(imageData));
+     } catch (error){
+        //Error handling
+        console.error('Weather API error:', error);
+        res.status(500).send('Error fetchig the image');
+}
+});
+
+//weather API 2 in text
+ app.get('/weatherText', async (req, res) =>{
+
+    const url = "http://www.7timer.info/bin/api.pl?lon=113.17&lat=23.09&product=astro&output=json"
+     
+    try{
+        const response = await fetch(url);
+         const data = await response.json();
+           
+         
+         res.set('Content-Type', 'application/json');
+         res.send(data);
+    }catch (error){
+        console.error('Failed to load:', error);
+        res.status(500).json({message:'Failed to fetxh weather message', error: error.message });
+    }
+
+ });
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
